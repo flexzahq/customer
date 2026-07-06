@@ -17,8 +17,11 @@ export type BookTokenResult = {
   doctorName: string;
 };
 
-function rpcErrorMessage(error: { message?: string; details?: string } | null): string {
+function rpcErrorMessage(error: { message?: string; details?: string; code?: string } | null): string {
   const raw = error?.message ?? error?.details ?? "request_failed";
+  if (error?.code === "PGRST202" || raw.includes("Could not find the function")) {
+    return "booking_unavailable";
+  }
   if (raw.includes("otp_cooldown")) return "otp_cooldown";
   if (raw.includes("otp_rate_limited")) return "otp_rate_limited";
   if (raw.includes("otp_invalid")) return "otp_invalid";
@@ -28,6 +31,11 @@ function rpcErrorMessage(error: { message?: string; details?: string } | null): 
   if (raw.includes("booking_closed")) return "booking_closed";
   if (raw.includes("already_in_queue")) return "already_in_queue";
   if (raw.includes("doctor_not_found")) return "doctor_not_found";
+  if (raw.includes("patient_name_required")) return "patient_name_required";
+  if (raw.includes("token_daily_limit_reached")) return "token_daily_limit_reached";
+  if (raw.includes("clinic_plan_expired")) return "clinic_plan_expired";
+  if (raw.includes("doctor_access_expired")) return "doctor_access_expired";
+  if (raw.includes("clinic_disabled")) return "clinic_disabled";
   if (raw.includes("invalid_mobile")) return "invalid_mobile";
   if (raw.includes("invalid_otp")) return "invalid_otp";
   return "request_failed";

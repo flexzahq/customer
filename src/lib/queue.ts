@@ -4,8 +4,6 @@ import {
   normalizeDoctorCode,
 } from "@/lib/doctorCode";
 
-const MINUTES_PER_TOKEN = 10;
-
 export type LiveQueue = {
   clinic: {
     id: string;
@@ -39,36 +37,9 @@ export type ResolvedDoctor = {
   morningEnd: string | null;
   eveningStart: string | null;
   eveningEnd: string | null;
+  minutesPerPatient: number;
+  maxTokensPerDay: number;
 };
-
-function todayInKolkata(): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Kolkata",
-  }).format(new Date());
-}
-
-function formatEta(minutes: number): string {
-  if (minutes <= 0) return "0m";
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  if (h === 0) return `${m}m`;
-  if (m === 0) return `${h}h`;
-  return `${h}h ${m}m`;
-}
-
-function blankQueue(): LiveQueue {
-  return {
-    clinic: null,
-    doctor: null,
-    session: null,
-    currentToken: null,
-    nextTokens: [],
-    waitingCount: 0,
-    estimatedTime: "0m",
-    hasQueue: false,
-    hasDoctor: false,
-  };
-}
 
 /** Entry screen: resolve unique doctor code → clinic + doctor. */
 export async function resolveDoctorCode(
@@ -100,6 +71,8 @@ export async function resolveDoctorCode(
     morning_end?: string | null;
     evening_start?: string | null;
     evening_end?: string | null;
+    minutes_per_patient?: number;
+    max_tokens_per_day?: number;
   } | null;
 
   if (!row?.ok || !row.doctor_code) return null;
@@ -120,77 +93,34 @@ export async function resolveDoctorCode(
     morningEnd: row.morning_end ?? null,
     eveningStart: row.evening_start ?? null,
     eveningEnd: row.evening_end ?? null,
+    minutesPerPatient: row.minutes_per_patient ?? 10,
+    maxTokensPerDay: row.max_tokens_per_day ?? 3,
   };
 }
 
-/** Live queue for one doctor (unique code). */
+import { fetchPublicQueue } from "@/lib/publicQueue";
+
+/** @deprecated Use fetchPublicQueue */
 export async function fetchLiveQueueByDoctorCode(
   doctorCode: string,
 ): Promise<LiveQueue> {
-  const code = normalizeDoctorCode(doctorCode);
-  if (!isValidDoctorCode(code)) return blankQueue();
-
-  const resolved = await resolveDoctorCode(code);
-  if (!resolved) return blankQueue();
-
-  const clinic = {
-    id: resolved.clinicId,
-    name: resolved.clinicName,
-    slug: resolved.clinicSlug,
-    subtitle: resolved.clinicSubtitle,
-  };
-
-  const doctor = {
-    id: resolved.doctorId,
-    name: resolved.doctorName,
-    code: resolved.doctorCode,
-  };
-
-  const { data: session, error: sessionError } = await supabase
-    .from("queue_sessions")
-    .select("id, status")
-    .eq("doctor_id", doctor.id)
-    .eq("session_date", todayInKolkata())
-    .maybeSingle();
-
-  if (sessionError) throw sessionError;
-  if (!session) {
-    return {
-      clinic,
-      doctor,
-      session: null,
-      currentToken: null,
-      nextTokens: [],
-      waitingCount: 0,
-      estimatedTime: "0m",
-      hasQueue: false,
-      hasDoctor: true,
-    };
-  }
-
-  const { data: tokens, error: tokensError } = await supabase
-    .from("tokens")
-    .select("number, status")
-    .eq("session_id", session.id)
-    .in("status", ["waiting", "serving"])
-    .order("number", { ascending: true });
-
-  if (tokensError) throw tokensError;
-
-  const list = tokens ?? [];
-  const serving = list.find((t) => t.status === "serving");
-  const waiting = list.filter((t) => t.status === "waiting");
-  const waitingCount = waiting.length;
-
+  const q = await fetchPublicQueue(doctorCode);
   return {
-    clinic,
-    doctor,
-    session,
-    currentToken: serving?.number ?? null,
-    nextTokens: waiting.slice(0, 2).map((t) => t.number),
-    waitingCount,
-    estimatedTime: formatEta(waitingCount * MINUTES_PER_TOKEN),
-    hasQueue: Boolean(serving) || waitingCount > 0,
-    hasDoctor: true,
+    clinic: q.clinic
+      ? {
+          id: q.clinic.clinicId,
+          name: q.clinic.clinicName,
+          slug: q.clinic.clinicSlug,
+          subtitle: q.clinic.clinicSubtitle,
+        }
+      : null,
+    doctor: q.doctor,
+    session: q.session,
+    currentToken: q.currentToken,
+    nextTokens: q.waitingTokens,
+    waitingCount: q.waitingCount,
+    estimatedTime: q.estimatedTime,
+    hasQueue: q.hasQueue,
+    hasDoctor: q.hasDoctor,
   };
 }
