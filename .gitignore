@@ -1,1 +1,38 @@
+# Dependencies
 node_modules
+
+# Build
+dist
+dist-ssr
+*.local
+
+# Env (secrets — never commit)
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+vite-dev.out.log
+vite-dev.err.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+*.swp
+.idea
+.vscode/*
+!.vscode/extensions.json
+
+# Supabase CLI local (if used later)
+supabase/.branches
+supabase/.temp
+
+# Other Flexza apps live in sibling folders — never commit them here
+admin/
+website/
+vendor/

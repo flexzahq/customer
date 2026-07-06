@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { TimingDrawer } from "./TimingDrawer";
 import { useI18n, type TranslationKey } from "@/lib/i18n";
+import { useClinicProfile } from "@/lib/clinicProfile";
 
 interface NavItem {
   icon: React.ElementType;
@@ -14,27 +15,36 @@ interface NavItem {
 
 interface BottomNavProps {
   variant?: "patient" | "clinic";
+  basePath?: string;
+  /** Patient nav: loads live timings for drawer */
+  doctorCode?: string;
 }
 
-const patientNavItems: NavItem[] = [
-  { icon: Home, labelKey: "navHome", path: "/" },
-  { icon: Clock, labelKey: "navTiming", path: "/timing", isDrawer: true },
-  { icon: Info, labelKey: "navAbout", path: "/about" },
-  { icon: HelpCircle, labelKey: "navHelp", path: "/help" },
-];
-
-const clinicNavItems: NavItem[] = [
-  { icon: Home, labelKey: "navHome", path: "/clinic" },
-  { icon: Ticket, labelKey: "navToken", path: "/token" },
-  { icon: Bell, labelKey: "navNotification", path: "/notifications" },
-  { icon: Users, labelKey: "navPatients", path: "/patients" },
-];
-
-export const BottomNav = ({ variant = "patient" }: BottomNavProps) => {
+export const BottomNav = ({
+  variant = "patient",
+  basePath = "",
+  doctorCode = "",
+}: BottomNavProps) => {
   const location = useLocation();
-  const items = variant === "patient" ? patientNavItems : clinicNavItems;
   const [showTiming, setShowTiming] = useState(false);
   const { t } = useI18n();
+  const profileQuery = useClinicProfile(doctorCode);
+
+  const patientNavItems: NavItem[] = [
+    { icon: Home, labelKey: "navHome", path: basePath || "/" },
+    { icon: Clock, labelKey: "navTiming", path: `${basePath}/timing`, isDrawer: true },
+    { icon: Info, labelKey: "navAbout", path: `${basePath}/about` },
+    { icon: HelpCircle, labelKey: "navHelp", path: `${basePath}/help` },
+  ];
+
+  const clinicNavItems: NavItem[] = [
+    { icon: Home, labelKey: "navHome", path: basePath || "/clinic" },
+    { icon: Ticket, labelKey: "navToken", path: `${basePath}/token` },
+    { icon: Bell, labelKey: "navNotification", path: `${basePath}/notifications` },
+    { icon: Users, labelKey: "navPatients", path: `${basePath}/patients` },
+  ];
+
+  const items = variant === "patient" ? patientNavItems : clinicNavItems;
 
   return (
     <>
@@ -43,7 +53,7 @@ export const BottomNav = ({ variant = "patient" }: BottomNavProps) => {
           {items.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
-            
+
             if (item.isDrawer) {
               return (
                 <button
@@ -51,11 +61,11 @@ export const BottomNav = ({ variant = "patient" }: BottomNavProps) => {
                   onClick={() => setShowTiming(true)}
                   className={cn(
                     "flex flex-col items-center justify-center gap-1 px-4 py-2 transition-colors",
-                    isActive ? "text-primary" : "text-muted-foreground"
+                    isActive ? "text-primary" : "text-muted-foreground",
                   )}
                 >
                   <Icon className="w-6 h-6" />
-                    <span className="text-xs font-medium">{t(item.labelKey)}</span>
+                  <span className="text-xs font-medium">{t(item.labelKey)}</span>
                 </button>
               );
             }
@@ -66,7 +76,7 @@ export const BottomNav = ({ variant = "patient" }: BottomNavProps) => {
                 to={item.path}
                 className={cn(
                   "flex flex-col items-center justify-center gap-1 px-4 py-2 transition-colors",
-                  isActive ? "text-primary" : "text-muted-foreground"
+                  isActive ? "text-primary" : "text-muted-foreground",
                 )}
               >
                 <Icon className="w-6 h-6" />
@@ -77,7 +87,17 @@ export const BottomNav = ({ variant = "patient" }: BottomNavProps) => {
         </div>
       </nav>
 
-      <TimingDrawer open={showTiming} onOpenChange={setShowTiming} />
+      {variant === "patient" && (
+        <TimingDrawer
+          open={showTiming}
+          onOpenChange={setShowTiming}
+          morningStart={profileQuery.data?.morningStart}
+          morningEnd={profileQuery.data?.morningEnd}
+          eveningStart={profileQuery.data?.eveningStart}
+          eveningEnd={profileQuery.data?.eveningEnd}
+          loading={profileQuery.isLoading}
+        />
+      )}
     </>
   );
 };

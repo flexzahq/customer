@@ -1,0 +1,80 @@
+---
+description: Flexza core developer rules — analysis first, permission before code, senior quality, existing UI
+alwaysApply: true
+---
+
+# Flexza — Developer Rules
+
+Follow these on every task. Do not wait for the user to repeat them.
+
+## 1. Analyze first — never jump to code
+
+Before proposing or changing anything:
+
+1. Read relevant code and project context deeply.
+2. State clearly: **what exists**, **what does not**, **what we can do**.
+3. Call out risks, gaps, and the simplest correct path.
+4. Only after that analysis, recommend next steps.
+
+Do not invent features, APIs, or behavior that are not in the codebase or agreed product rules.
+
+## 2. Permission before implementation
+
+- **Never implement, edit files, or run destructive commands** until the user explicitly approves.
+- Default response: analysis + plan + options → ask permission.
+- After approval: implement only the approved scope — nothing extra.
+- If scope is unclear, ask one sharp question; do not guess and code.
+
+## 3. Super-senior quality bar
+
+Work as a super-senior engineer:
+
+- Clean, readable, scalable, maintainable code.
+- Smallest correct change; no drive-by refactors.
+- Match existing patterns, naming, and structure.
+- No over-engineering, premature abstractions, or unused helpers.
+- Prefer clear domain models and separation of concerns (UI vs API vs domain).
+- Comments only for non-obvious business logic.
+- Leave the codebase easier to extend (admin, plans, multi-clinic) without building unused UI early.
+
+## 4. Design and UI — follow what exists
+
+- Keep current design system: colors, fonts, spacing, components, layout patterns.
+- Reuse existing shadcn/ui components and tokens from `src/index.css` / Tailwind theme.
+- New screens must look like the current app (mobile-first, bottom nav, cards, token UI).
+- Do not introduce a new visual style, random colors, or alternate font stack unless the user explicitly asks.
+
+## 5. Product facts (do not contradict)
+
+- Product name: **Flexza** (not Queba).
+- Clinic/doctor **QR is permanent** — links to `/d/{DOCTOR_CODE}`; not regenerated daily.
+- **Doctor `code` is globally UNIQUE** (4–12 A–Z/0–9). Display names may duplicate; codes must not.
+- Customer app `/` is the **entry screen** (scan QR or enter doctor code). Queue UI only at `/d/:doctorCode`.
+- Patient **OTP required on every token book** — no skip for returning users.
+- Clinics start **free**; paid plans later. Patient always free.
+- **Admin panel** lives in `admin/` and is built alongside the app; DB/schema must support admin, plans, and status from day one.
+
+## 5b. Repo / deploy architecture (Option A — separate apps)
+
+Do **not** merge the marketing site into the customer app.
+
+| App | Folder | Role | Typical host |
+|-----|--------|------|----------------|
+| Marketing landing | `website/` | Public homepage, SEO, CTAs | `flexza.in` |
+| Patient + clinic app | `customer/` (this repo root `src/`) | Queue, book token, staff | `app.flexza.in` |
+| Admin | `admin/` | Platform management | `admin.flexza.in` (later) |
+
+- `website/` is its own Vite app (`package.json` name `flexza-landing`). Run and deploy it separately.
+- Customer `/` is the **app** entry (patient/clinic), not the marketing landing.
+- Clinic permanent QR/link points at the **app** host (e.g. `app.flexza.in/c/{slug}`), never only the marketing site.
+- Shared brand assets may be copied, but do not couple builds or routes across apps.
+
+## 6. Response shape for work requests
+
+Unless the user already said “implement” / “karo” / “apply”:
+
+1. Deep analysis (what is / isn’t / can do)
+2. Recommended approach
+3. Explicit ask: permission to implement
+
+Then stop until approved.

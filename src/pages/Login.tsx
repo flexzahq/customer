@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { User, Phone, Lock, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
+import { FlexzaLogo } from "@/components/FlexzaLogo";
+import { BRAND } from "@/lib/brand";
 
 type LoginStage = "register" | "otp" | "token";
 
@@ -73,15 +75,13 @@ const Login = () => {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md rounded-[12rem] border border-border bg-card/95 p-8 shadow-2xl ring-1 ring-black/5 backdrop-blur-sm transition-all duration-300">
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl mb-4">
-            <div className="grid grid-cols-2 gap-1">
-              <div className="w-3 h-3 bg-primary-foreground rounded-sm" />
-              <div className="w-3 h-3 bg-primary-foreground rounded-sm" />
-              <div className="w-3 h-3 bg-primary-foreground rounded-sm" />
-              <div className="w-3 h-3 bg-primary-foreground rounded-sm" />
-            </div>
+          <div className="flex justify-center mb-4">
+            <FlexzaLogo
+              variant="horizontal-black"
+              className="h-12 w-auto max-w-[240px]"
+            />
           </div>
-          <h1 className="text-5xl font-bold">Queba</h1>
+          <p className="text-sm text-muted-foreground">{BRAND.tagline}</p>
           <p className="text-2xl font-bold mt-6">
             {stage === "register" && "Register"}
             {stage === "otp" && "Verify OTP"}

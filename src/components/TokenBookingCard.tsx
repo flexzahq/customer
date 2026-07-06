@@ -6,32 +6,45 @@ import { BookingSuccessDialog } from "./BookingSuccessDialog";
 import { TokenBorder } from "@/components/ui/tokenborder";
 import { useI18n } from "@/lib/i18n";
 
-
 interface TokenBookingCardProps {
   doctorName: string;
+  doctorCode: string;
   tokenNumber?: string;
   color?: string;
+  bookingEnabled?: boolean;
+  /** Patient's own booked token (if any) */
+  myTokenNumber?: number | null;
+  onBooked?: () => void;
 }
 
-export const TokenBookingCard = ({ doctorName, tokenNumber, color = "hsl(var(--white))" }: TokenBookingCardProps) => {
+export const TokenBookingCard = ({
+  doctorName,
+  doctorCode,
+  tokenNumber,
+  color = "hsl(var(--white))",
+  bookingEnabled = true,
+  myTokenNumber = null,
+  onBooked,
+}: TokenBookingCardProps) => {
   const [showLogin, setShowLogin] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [bookedToken, setBookedToken] = useState(0);
   const { t } = useI18n();
 
+  const displayToken =
+    myTokenNumber != null
+      ? String(myTokenNumber)
+      : tokenNumber || "#";
+
   const handleBookToken = () => {
-    const user = localStorage.getItem("user");
-    if (!user) {
-      setShowLogin(true);
-    } else {
-      const newToken = Math.floor(Math.random() * 50) + 1;
-      setBookedToken(newToken);
-      setShowSuccess(true);
-    }
+    if (!bookingEnabled || !doctorCode) return;
+    // OTP required on every book — always open full flow
+    setShowLogin(true);
   };
 
   const handleLoginSuccess = (token: number) => {
     setBookedToken(token);
+    onBooked?.();
     setTimeout(() => setShowSuccess(true), 300);
   };
 
@@ -43,11 +56,9 @@ export const TokenBookingCard = ({ doctorName, tokenNumber, color = "hsl(var(--w
           <CardContent className="pt-8 pb-6 text-center">
             <h3 className="text-lg font-bold mb-4">{doctorName}</h3>
             <div className="text-8xl font-bold text-muted-foreground/20 mb-6">
-              {tokenNumber || "#"}
+              {displayToken.startsWith("#") ? displayToken : `#${displayToken}`}
             </div>
-            <Button
-              onClick={handleBookToken}
-            >
+            <Button onClick={handleBookToken} disabled={!bookingEnabled}>
               {t("bookMyToken")}
             </Button>
           </CardContent>
@@ -60,6 +71,7 @@ export const TokenBookingCard = ({ doctorName, tokenNumber, color = "hsl(var(--w
       <LoginDialog
         open={showLogin}
         onOpenChange={setShowLogin}
+        doctorCode={doctorCode}
         onLoginSuccess={handleLoginSuccess}
       />
 

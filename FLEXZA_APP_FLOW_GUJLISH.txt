@@ -1,0 +1,459 @@
+================================================================================
+  FLEXZA — APP FLOW (COMPLETE)
+  Patient + Clinic + Admin
+  Free pehla, Paid plans pachi | Admin panel last (DB pehla thi ready)
+================================================================================
+
+Product name: FLEXZA (Queba nathi)
+Model: Pehla FREE, pachi plan launch
+Admin panel: LAST banase, pan DB + features ADMIN dhyan ma rakhine design
+
+
+================================================================================
+IMPORTANT RULES (FIXED — CHANGE NATHI)
+================================================================================
+
+1. QR CODE = EK J, PERMANENT
+   - Clinic ne ek j QR male (setup time)
+   - Daily navo QR generate NATHI thato
+   - QR change thato nathi unless clinic intentionally reset kare (rare)
+   - Same QR / same link hamesha — patient scan kari token book kare
+   - QR = clinic nu permanent entry point
+
+2. OTP = HAR TOKEN BOOK PAR REQUIRED
+   - Patient jyare pan token book kare, EVERY TIME OTP joiye
+   - Returning patient hoy to pan OTP required
+   - Session / "already login" thi direct book NATHI
+   - Flow: Book My Token → Mobile → OTP verify → Token male
+   - Security + spam control mate aa rule fixed che
+
+3. PATIENT HAMESHA FREE
+   - Patient kai pay nathi karto
+
+4. CLINIC PEHLA FREE, PACHI PAID PLANS
+   - Launch time badha clinics FREE plan par
+   - Pachi plan launch kari paid features unlock
+
+5. ADMIN PANEL LAST
+   - UI last banase
+   - Pan DB ma pehla thi: plan, status, limits fields ready
+
+
+================================================================================
+BIG PICTURE — 3 SIDE
+================================================================================
+
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│   PATIENT    │     │    CLINIC    │     │    ADMIN     │
+│  (mobile)    │     │   (mobile)   │     │   (desktop)  │
+│              │     │              │     │              │
+│ Book token   │     │ Skip/Done    │     │ Clinics      │
+│ Live queue   │     │ Pause book   │     │ Plans/free   │
+│ Notifications│     │ Patients     │     │ Users, stats │
+└──────┬───────┘     └──────┬───────┘     └──────┬───────┘
+       │                    │                    │
+       └────────────────────┼────────────────────┘
+                            ▼
+                    FLEXZA BACKEND + DB
+              (ek j system — badhu connected)
+
+
+Patient book kare → Clinic ne dikhe → Admin ne overview (pachi).
+
+
+================================================================================
+QR FLOW (PERMANENT — EK J QR)
+================================================================================
+
+CLINIC SETUP TIME (ek var):
+  Clinic register / profile complete
+        │
+        ▼
+  Flexza system ek PERMANENT QR + share link generate kare
+  Example link: flexza.app/c/svedna   (clinic slug)
+        │
+        ▼
+  Clinic:
+  - QR print (reception, door, table)
+  - WhatsApp status / Google Maps / visiting card
+  - Same QR roz use — navo generate nathi
+
+DAILY:
+  Patient same QR scan kare
+        │
+        ▼
+  Same clinic page open
+        │
+        ▼
+  Token book (OTP every time)
+
+QR RESET (optional, rare):
+  Fakt agar clinic e mangyu / security issue
+  Admin or clinic settings mathi — daily automatic NATHI
+
+
+================================================================================
+1) PATIENT APP FLOW
+================================================================================
+
+Patient = clinic no customer.
+App install optional — PERMANENT QR / link thi web/PWA.
+
+
+--------------------------------------------------------------------------------
+A) TOKEN BOOK (HAR VAR — OTP REQUIRED)
+--------------------------------------------------------------------------------
+
+  Permanent QR scan / Flexza clinic link open
+        │
+        ▼
+  Clinic page open
+  (clinic name, doctor, timings, currently #X)
+        │
+        ▼
+  "Book My Token" dabavo
+        │
+        ▼
+  Mobile number nakho
+        │
+        ▼
+  OTP aave → patient verify kare   ★ EVERY BOOKING PAR ★
+        │
+        ▼
+  Naam (pehli var / profile mate — optional policy)
+        │
+        ▼
+  Token #27 malo + success screen
+  "Turn najik aavse tyare message aavse"
+        │
+        ▼
+  Home par live status:
+  - Currently serving: #12
+  - Tamaro token: #27
+  - Ahead: 15
+  - ETA: ~1h 20m
+
+
+IMPORTANT:
+- Returning patient hoy to pan Book dabave tyare OTP FARI THI joiye
+- "Already login che etle OTP skip" — AA NATHI
+- Har book = Mobile confirm + OTP = real person, kam spam
+
+
+--------------------------------------------------------------------------------
+B) WAIT TIME MA PATIENT SU KARE
+--------------------------------------------------------------------------------
+
+  Home par live queue juvo
+        │
+        ├── Timing juvo (morning/evening)
+        ├── About clinic
+        ├── Help
+        └── History (past tokens)
+        │
+        ▼
+  Turn najik (e.g. 3 tokens pehla) → SMS/WhatsApp/push:
+  "Tamaro turn najik che, clinic aavo"
+        │
+        ▼
+  Clinic ma → doctor/staff Mark Complete
+        │
+        ▼
+  Token completed → history ma
+
+
+--------------------------------------------------------------------------------
+C) PATIENT RULES
+--------------------------------------------------------------------------------
+
+- Ek doctor, ek din = ek active token (spam nathi)
+- Clinic e booking PAUSE kari hoy to:
+  "Haji booking bandh che" — book nathi thatu
+- Patient hamesha FREE — kai pay nathi
+- Token number SEQUENTIAL: #1, #2, #3… (random nathi)
+- Cancel (phase 2): history mathi, turn pehla
+
+
+================================================================================
+2) CLINIC APP FLOW
+================================================================================
+
+Clinic = doctor / receptionist. Phone par chalave.
+
+
+--------------------------------------------------------------------------------
+A) PEHLI VAR SETUP (EK VAR)
+--------------------------------------------------------------------------------
+
+  Clinic register (mobile OTP)
+        │
+        ▼
+  Clinic profile
+  - Name, address
+  - Doctor name
+  - Morning / evening timing
+        │
+        ▼
+  PERMANENT QR code + share link male   ★ EK J, DAILY NAVO NATHI ★
+  (print / WhatsApp / reception)
+        │
+        ▼
+  FREE plan active (default)
+
+
+--------------------------------------------------------------------------------
+B) DAILY MORNING
+--------------------------------------------------------------------------------
+
+  Staff login (OTP / PIN)
+        │
+        ▼
+  Dashboard
+  - Aaj ketla tokens
+  - Current queue size
+        │
+        ▼
+  Token screen open
+  Session = OPEN (booking chalu)
+  (QR same j — navo generate nathi)
+
+
+--------------------------------------------------------------------------------
+C) OPD CHALE TYARE (MAIN LOOP)
+--------------------------------------------------------------------------------
+
+                    ┌─────────────────────┐
+                    │  Currently: #12     │
+                    │  Hardik Kareliya    │
+                    └──────────┬──────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              ▼                ▼                ▼
+       Mark Complete        Skip          Pause booking
+              │                │                │
+              ▼                ▼                ▼
+        #13 serving     #12 → Skipped     Nava tokens
+        patient notify  list ma           bandh
+                        #13 serving
+
+
+TOKEN LIST TABS:
+  Current   → waiting line (#13, #14, #15…)
+  Skipped   → miss thayela (pachi recall kari sako)
+  Completed → aaj na done patients
+
+
+--------------------------------------------------------------------------------
+D) WALK-IN PATIENT (PHONE NATHI / BOOK NATHI KARYU)
+--------------------------------------------------------------------------------
+
+  Reception: "+" dabavo
+        │
+        ▼
+  Naam + mobile (optional)
+        │
+        ▼
+  Token allocate (same queue ma)
+  (Walk-in par patient OTP optional — staff add kare etle;
+   App thi book kare to OTP ALWAYS required)
+
+
+--------------------------------------------------------------------------------
+E) EVENING
+--------------------------------------------------------------------------------
+
+  Session CLOSE
+        │
+        ▼
+  Nava tokens bandh
+  Stats: total tokens, new vs old patients
+  (QR still same — next day pan same QR)
+
+
+--------------------------------------------------------------------------------
+F) CLINIC NOTIFICATIONS
+--------------------------------------------------------------------------------
+
+  Koi patient book kare (OTP verify pachi)
+        │
+        ▼
+  Clinic app ma notification:
+  "Token #27 booked by Hardik"
+
+
+================================================================================
+3) ADMIN PANEL FLOW (LAST BANASE, DB PEHLA THI READY)
+================================================================================
+
+Tame (Flexza team) badhu manage:
+
+  Admin login
+        │
+        ▼
+  Dashboard
+  - Total clinics
+  - Active aaj
+  - Total tokens (platform)
+        │
+        ├── Clinics list
+        │     view / enable / disable
+        │     plan: free → paid (launch pachi)
+        │     QR / link view (permanent QR clinic mate)
+        │
+        ├── Users (patients / staff)
+        │
+        ├── Plans
+        │     Free (default pehla)
+        │     Paid plans (launch time activate)
+        │
+        └── Support / issues
+
+
+DB MA PEHLA THI (admin UI pehla pan):
+- clinics.plan     = free | starter | pro ...
+- clinics.status   = active | disabled
+- clinics.slug     = permanent link/QR mate (e.g. svedna)
+- clinics.qr_code  = permanent (daily regenerate nathi)
+- limits (optional): tokens/day, SMS count — free plan mate ready
+
+Etle free → paid launch time CODE REWRITE NATHI,
+fakt plan on kari do.
+
+
+================================================================================
+4) FREE PEHLA, PLAN LAUNCH PACHI
+================================================================================
+
+PHASE FREE (PEHLA LAUNCH):
+  Clinic register → auto FREE plan
+  Patient → free
+  Permanent QR male
+  Patient book → EVERY TIME OTP
+  SMS/WhatsApp → limited ke basic (tame decide)
+  Admin (pachi) → clinics juvo, disable kari sako
+
+PHASE PAID LAUNCH (PACHI):
+  Admin / system:
+    Clinic ne plan upgrade (free → paid)
+        │
+        ▼
+  Paid features unlock
+  (extra SMS, multi-doctor, analytics, TV display…)
+
+Patient flow SAME rahe (QR same, OTP every book same).
+Change clinic side + admin side.
+
+
+================================================================================
+5) EK DIN NO FULL FLOW (BADHA EK SATHE)
+================================================================================
+
+08:00  Clinic staff login → session OPEN
+       QR same j (permanent) — reception par lageu che
+
+09:00  Patient A permanent QR scan
+       → Mobile → OTP → Token #1
+
+09:05  Patient B same QR scan
+       → Mobile → OTP (fari thi) → Token #2
+
+09:10  Staff: Currently #1 → Mark Complete
+       Patient B screen: "Currently #2, tamaro turn"
+
+09:12  Patient C same QR → OTP → Token #3
+       Clinic notification: "#3 booked"
+
+09:20  Turn najik message relevant patient ne
+
+13:00  Lunch → Pause booking = ON
+       (QR same, pan book nathi thatu)
+
+17:00  Pause OFF → evening OPD
+       Patients fari same QR + OTP thi book
+
+20:00  Session CLOSE
+       Next day: SAME QR, navo generate nathi
+
+Admin (pachi) dashboard ma aa clinic nu data dikhe
+
+
+================================================================================
+6) SCREEN-WISE FLOW MAP
+================================================================================
+
+Kon      | Screen              | Flow ma role
+---------|---------------------|----------------------------------------------
+Patient  | Home /              | Live queue + Book (OTP every time)
+Patient  | Timing              | Hours juvo
+Patient  | About               | Clinic info
+Patient  | Help                | Support
+Clinic   | Clinic /clinic      | Dashboard / stats
+Clinic   | Token /token        | Skip / Complete / Pause / lists
+Clinic   | Patients            | Patient directory
+Clinic   | Notifications       | Navi bookings
+Clinic   | Setup (ek var)      | Profile + PERMANENT QR generate
+Admin    | (nava, last)        | Clinics, plans, platform control
+
+
+================================================================================
+7) FLOW RULES SUMMARY (YAAD RAKHO)
+================================================================================
+
+1. Brand: FLEXZA
+2. QR = EK J, PERMANENT — daily navo NATHI
+3. Patient token book = EVERY TIME OTP REQUIRED
+4. Patient free — hamesha
+5. Clinic pehla free, pachi plan
+6. Token sequential — #1, #2, #3… per doctor per day
+7. Ek serving ek time
+8. Live update patient + clinic be side
+9. Admin last UI, pan DB fields pehla thi (plan, status, slug, permanent QR)
+10. Walk-in staff add kari sake; app book = OTP always
+
+
+================================================================================
+8) SHORT MA
+================================================================================
+
+PATIENT:
+  Permanent QR/link
+    → Book My Token
+    → Mobile + OTP (HAR VAR)
+    → Token malo
+    → Live wait
+    → Near message
+    → Done
+
+CLINIC:
+  Setup (ek var): profile + PERMANENT QR
+  Daily: Login → Open queue → Complete/Skip/Pause → Close day
+  (QR change nathi)
+
+ADMIN (last):
+  Clinics + Free/Paid plans + platform manage
+
+VACHE: ek Flexza backend
+  Free pehla, paid launch ready schema sathe
+
+
+================================================================================
+9) TEAM WORK ORDER (REMINDER)
+================================================================================
+
+DECIDE → BUILD ENGINE → WIRE UI → PILOT OPD → FREE LAUNCH → PAID PLANS
+              │
+              ├── Permanent QR per clinic (ek var)
+              ├── OTP on every patient book
+              ├── Skip / Complete / Pause
+              ├── Live queue
+              └── DB ready for admin + plans
+
+Admin panel UI = LAST
+DB design = PEHLA THI admin + plans dhyan ma
+
+
+================================================================================
+END OF FILE
+File: FLEXZA_APP_FLOW_GUJLISH.txt
+Location: flexza/customer/
+================================================================================

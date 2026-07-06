@@ -2,7 +2,7 @@ import { TokenBorder } from "@/components/ui/tokenborder";
 import { useI18n } from "@/lib/i18n";
 
 interface CurrentTokenBadgesProps {
-  currentToken: number;
+  currentToken: number | null;
   nextTokens: number[];
 }
 
@@ -14,7 +14,9 @@ export const CurrentTokenBadges = ({ currentToken, nextTokens }: CurrentTokenBad
         <div className="flex">
           <div className="shrink-0 bg-primary px-8 pt-5 pb-4 text-primary-foreground">
             <p className="text-md opacity-90">{t("currently")}</p>
-            <p className="text-4xl font-bold leading-tight">#{currentToken}</p>
+            <p className="text-4xl font-bold leading-tight">
+              {currentToken != null ? `#${currentToken}` : "#—"}
+            </p>
           </div>
         </div>
 
@@ -27,12 +29,16 @@ export const CurrentTokenBadges = ({ currentToken, nextTokens }: CurrentTokenBad
           <div className="flex-1 bg-primary-foreground px-6 pt-5 pb-4 text-left">
             <p className="text-md text-foreground">{t("queue")}</p>
             <div className="mt-2 flex items-center whitespace-nowrap text-2xl font-bold leading-tight text-foreground">
-              {nextTokens.map((token, index) => (
-                <div key={token} className="flex items-center">
-                  {index > 0 && <span className="mx-4 h-7 w-px bg-border" />}
-                  <span>#{token}</span>
-                </div>
-              ))}
+              {nextTokens.length === 0 ? (
+                <span className="text-muted-foreground">—</span>
+              ) : (
+                nextTokens.map((token, index) => (
+                  <div key={token} className="flex items-center">
+                    {index > 0 && <span className="mx-4 h-7 w-px bg-border" />}
+                    <span>#{token}</span>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>

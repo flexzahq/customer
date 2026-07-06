@@ -1,0 +1,574 @@
+================================================================================
+  QUEBA / FLEXZA — COMPLETE A TO Z GUIDE (GUJLISH)
+  Small Clinic Queue Management Product
+  Written as founder-level realistic plan
+================================================================================
+
+Boss, seedha ane clear — jenu code che, market ma kevi rite chalase, su banavu,
+kone bechvu, ane aagal su karvu. Aa file ma badhu ek jagya e che.
+
+
+================================================================================
+1. AAJE TAMARE PAAS SU CHE? (SACHCHAI)
+================================================================================
+
+Aa PRODUCT NATHI — aa UI DEMO / PROTOTYPE che.
+
+Matlab:
+- Screens sundar che (patient + clinic)
+- Button dabavo to dikhe che
+- Pan BACKEND NATHI, DATABASE NATHI, REAL OTP NATHI
+- Token number Math.random() thi aave che — real queue nathi
+- OTP hardcoded "1234" che
+- Clinic name hardcode: Svedna Clinic
+- Brand confuse: folder ma Flexza, app ma Queba
+
+TECH STACK (jo che):
+- React + Vite + TypeScript
+- Tailwind CSS + shadcn/ui
+- react-router-dom
+- TanStack Query (wired pan unused)
+- EN/GU i18n (partial)
+- Lovable thi scaffold thayelu
+
+STATUS TABLE:
+--------------------------------------------------------------------------------
+Layer                              | Status
+-----------------------------------|--------------------------------------------
+Patient UI                         | Screens exist, mock data
+Clinic UI                          | Screens exist, mock data
+Auth (OTP login)                   | UI only — OTP = 1234
+Token booking                      | Random number
+Backend / DB / API                 | MISSING
+Real-time queue updates            | MISSING
+SMS / WhatsApp / push              | MISSING
+Multi-clinic / SaaS                | MISSING (hardcoded Svedna)
+Payments                           | MISSING
+--------------------------------------------------------------------------------
+
+SIMPLE BOTTOM LINE:
+Design 40-50% ready, working product 5%. Pause thayu etle normal che —
+pan aagal BACKEND + REAL CLINIC jodiye to business bane.
+
+
+================================================================================
+2. AA PRODUCT SU CHE ANE KYO?
+================================================================================
+
+EK LINE MA:
+> Queba = small clinic mate live token/queue system.
+> Patient ghar/bahar thi token book kare, doctor/staff phone par line control kare.
+
+REAL PROBLEM (INDIA / GUJARAT CLINICS):
+Small clinic (1-3 doctor, 20-80 patient/day) aaje:
+
+1. Patient vadhare early aave, 1-3 hour wait
+2. Staff register / WhatsApp ma naam lakhe
+3. "Next!" bolay, turn miss thay
+4. Doctor ne khabar nathi ketla waiting
+5. Patient gusso, staff tension
+6. "Hu pehla aavyo" ni fight
+
+Patient ne phone che, clinic WhatsApp use kare —
+HEAVY HOSPITAL SOFTWARE NATHI JOITU. Joitu che:
+
+- Bahar/ghar thi token
+- "Haji #12 chalyu che, tamaro #25, ~1h 50m"
+- Turn najik aave tyare message
+- Doctor Skip / Complete dabave
+
+Tamara UI ma aa j vision che — sahi direction.
+
+MARKET MA KYO CHALASE?
+--------------------------------------------------------------------------------
+Point                    | Reality
+-------------------------|------------------------------------------------------
+Pain                     | Daily, emotional — patient wait thi thake
+Paisa kon aape?          | Doctor / clinic owner
+Free use kon kare?       | Patient
+Switch easy?             | Ha, 15 minute setup hoy to
+Competition (small)      | Weak — Practo vagere heavy/expensive
+--------------------------------------------------------------------------------
+
+Hospital software small GP/skin clinic mate vadhu.
+Paper + WhatsApp kam.
+TAMARA GAP AHIYA CHE.
+
+
+================================================================================
+3. KONE TARGET KARVU? (ICP)
+================================================================================
+
+PEHLA 50 PAYING CLINICS:
+Solo / small clinics — Gujarat local start:
+
+- Skin, dental, ortho, ENT, pediatric, GP
+- 1 doctor + 1-2 staff
+- 25-100 patient/day
+- Gujarati/Hindi patients
+- Owner j decision le (hospital IT committee nathi)
+
+Tamara demo SVEDNA (Skin & Wellness) perfect first vertical —
+skin clinic ma wait vadhu, walk-in vadhu.
+
+PACHI (20-30 CLINIC PACHI):
+- Lab (sample token)
+- Physiotherapy / wellness
+- 2-5 doctor polyclinic (alag queue)
+
+PEHLA NA TARGET KARO:
+- Big hospital (sales lambu, compliance)
+- Government hospital (tender)
+- Full EMR/HMS banavu (feature ma marai jaso)
+
+RULE: Queue becho, hospital software nahi.
+
+
+================================================================================
+4. PRODUCT MA 2 SIDE (TAME ALREADY DESIGN KARYU)
+================================================================================
+
+A) PATIENT APP (/)
+------------------
+Open clinic link/QR
+  -> Live token juvo
+  -> Book My Token (OTP)
+  -> #N malo
+  -> Queue juvo
+  -> Turn najik message
+
+Patient routes:
+- /           Home (queue + book)
+- /timing     Opening hours
+- /about      Clinic about
+- /help       Help & FAQ
+
+B) CLINIC APP (/clinic, /token, ...)
+------------------------------------
+Login
+  -> Current token
+  -> Skip / Complete
+  -> "Nava token book thai sake?" on/off
+  -> Patients
+  -> Stats
+
+Clinic routes:
+- /clinic          Dashboard stats
+- /token           Queue operations
+- /notifications   Token booked alerts
+- /patients        Patient directory
+
+Aa split sahi che.
+MVP ma ek j PWA, role thi route alag — enough.
+
+Pachi alag kari sako:
+- patient.queba.app/c/svedna  (public link / QR)
+- clinic.queba.app            (staff login)
+
+
+================================================================================
+5. FEATURES: PEHLA SU, PACHI SU
+================================================================================
+
+MVP (6-8 WEEK) — AA VAGAR PAISA NAHI MALE
+--------------------------------------------------------------------------------
+#  | Feature                                      | Kyo
+---|----------------------------------------------|-------------------------
+1  | Clinic account + doctor profile              | Multi-clinic base
+2  | Patient mobile OTP thi book                  | Identity + trust
+3  | Live current token + position + ETA           | Core value
+4  | Staff: Next / Skip / Complete                | Clinic control
+5  | Pause booking ("Can book? No")               | Lunch / emergency
+6  | Clinic timings (morning/evening)             | Timing screen already
+7  | SMS/WhatsApp: book + 3 token pehla           | Patient bahar jai sake
+8  | QR / link clinic mate                        | App install nathi joi
+9  | Gujarati + English                           | Already start — rakho
+10 | Ek patient = ek active token/doctor/day      | Spam rokvu
+--------------------------------------------------------------------------------
+
+PHASE 2 (10 PAYING CLINIC PACHI):
+- Cancel / reschedule
+- Reception thi walk-in token
+- Multiple doctors
+- Simple analytics (tokens/day, wait time)
+- Patient list
+- Waiting room TV display
+
+PHASE 3 (PACHI):
+- Advance payment
+- Appointment slots
+- Reviews / reminders
+- White-label
+- API for existing clinic software
+
+PHASE 3 PEHLA MAT BANAVO. 10 clinic pay kare pachi.
+
+
+================================================================================
+6. MARKET MA DAILY KEVI RITE CHALASE
+================================================================================
+
+PATIENT JOURNEY:
+1. Clinic reception / Google Maps / WhatsApp par QR
+2. Scan -> web app (Play Store nathi)
+3. "Currently #12, Queue #13, #14"
+4. Book My Token -> OTP -> naam -> #27
+5. Chai / car ma wait
+6. #24 aave tyare WhatsApp: "Tamaro turn najik che"
+7. Doctor Complete -> next
+
+CLINIC JOURNEY:
+1. Staff sasta Android par clinic app
+2. Current patient, Complete / Skip
+3. Doctor late hoy to booking No
+4. Day end: total tokens (dashboard)
+
+CLINIC KYO PAY KARE?
+Software mate nahi — aa mate:
+- Kam gusso patients
+- Waiting room ma kam bhid
+- WhatsApp chaos kam
+- Opposite clinic karta modern lage
+
+PRICE INDIA MA REALISTIC:
+Rs.499 - Rs.1,999 / month
+Start: Rs.799 / month  OR  Rs.7,999 / year
+
+Patient thi paisa MAT LEVU — adoption marai jase.
+
+
+================================================================================
+7. PAISA MODEL (BUSINESS MODEL)
+================================================================================
+
+--------------------------------------------------------------------------------
+Model                 | Recommendation
+----------------------|---------------------------------------------------------
+Patient pay           | NA
+Clinic subscription   | HA — MAIN
+Free trial            | 14-30 day, full features
+Setup fee             | Optional Rs.1,000-2,000 (visit kari setup)
+SMS cost              | 500 SMS include, extra bill
+--------------------------------------------------------------------------------
+
+UNIT ECONOMICS SKETCH:
+- SMS/WhatsApp: ~Rs.0.15-0.50 per message
+- 50 patients/day x 2 messages = 100 msgs x Rs.0.30 = Rs.30/day ~ Rs.900/month
+- Charge Rs.999/month -> thin margin unless WhatsApp carefully use
+
+SMART APPROACH:
+- Free plan: app ma live update only
+- Paid: WhatsApp/SMS alerts
+  OR 300 alerts/month include, extra charge
+
+
+================================================================================
+8. COMPETITION
+================================================================================
+
+--------------------------------------------------------------------------------
+Kon                    | Position              | Tamaro angle
+-----------------------|-----------------------|--------------------------------
+Practo                 | Appointment+discovery | Small clinic live queue nathi
+International QMS      | Enterprise            | India price nathi
+WhatsApp bots          | Sasta                 | Unreliable, staff UI nathi
+Hardware token machine | Purano                | Remote book nathi
+Custom clinic apps     | One-off               | Tame multi-clinic SaaS
+--------------------------------------------------------------------------------
+
+TAMARO WEDGE:
+"WhatsApp jetlu simple, clinic phone par, Gujarati, Rs.799/month, 1 day ma live."
+
+
+================================================================================
+9. TECHNICAL — AAGAL SU BANAVU
+================================================================================
+
+RAKHO (CURRENT STACK):
+- React + Vite + TypeScript + Tailwind + shadcn
+- TanStack Query (API mate ready)
+- i18n EN/GU (already started)
+
+JOIYE (ARCHITECTURE):
+
+  Patient PWA  ----->  Backend API  ----->  Postgres + Redis
+  Clinic PWA   <-----  (Node/Nest)  <-----  Realtime (WebSocket)
+                              |
+                       SMS / WhatsApp
+
+CORE DATA MODELS:
+- Clinic (id, name, slug, timings, plan)
+- Doctor (id, clinic_id, name)
+- Patient (id, mobile, name)
+- QueueSession (id, doctor_id, date, status: open|paused|closed)
+- Token (id, session_id, patient_id, number,
+         status: waiting|serving|skipped|completed|cancelled)
+- DeviceAuth (optional — pachi)
+
+CRITICAL PRODUCT RULES:
+1. Token number SEQUENTIAL per doctor per day — Math.random() NATHI
+2. Only one "serving" token at a time
+3. Skip -> skipped list, can recall later
+4. Complete -> increment current
+5. Real-time: WebSocket or Supabase — patient screen refresh vagar update
+6. OTP via MSG91 / Twilio / Fast2SMS (India)
+
+/LOGIN PAGE NU CONFUSION:
+Tyare "device token" (32 character string) ane "queue token" (#12) mix thay che.
+
+MVP MA:
+- Patient: phone OTP only (session cookie/JWT)
+- Clinic staff: phone OTP ke PIN
+- 32-char device token patient UX mathi kadhi nakhvo
+
+LoginDialog (phone -> OTP -> name -> #token) — aa j sahi flow, RAKHO.
+
+HARDCODED THINGS TO REMOVE:
+- "Svedna Clinic" -> clinic profile / subdomain
+- "Dr. Nikul Agrawat" -> doctor entity
+- hasQueue = true demo flag -> real API
+- Dummy OTP "1234" -> real OTP service
+
+CODE MA SU SAHI CHE (RAKHO):
+- Patient vs clinic nav alag
+- Book flow: phone -> OTP -> name -> token
+- Current / Skipped / Completed tabs
+- Pause booking toggle
+- EN/GU language
+- Mobile-first bottom nav
+- People ahead + ETA cards
+
+Skeleton strong che. Ghanu startups aa clarity sudhi nathi pohoche.
+
+
+================================================================================
+10. CODE INVENTORY — SU READY, SU FAKE, SU MISSING
+================================================================================
+
+PATIENT FEATURES:
+--------------------------------------------------------------------------------
+Feature                         | Status
+--------------------------------|-----------------------------------------------
+View current token + next       | Partial — hardcoded #12, #13, #14
+Total ahead / ETA               | Partial — hardcoded 25, 1h 50m
+Book token                      | Partial — random number, no server
+Phone OTP login (drawer)        | Partial — dummy OTP 1234
+Persist user locally            | Partial — localStorage only
+Recent history                  | Partial — one fake card
+Empty queue state               | Partial — UI exists, hasQueue never false
+Clinic hours                    | Done (static)
+About clinic                    | Done (static)
+Help / FAQ                      | Partial — cancel mentioned, not built
+EN/GU language toggle           | Partial — GU incomplete keys
+Cancel token                    | MISSING
+Real-time queue updates         | MISSING
+Push/SMS "turn near"            | MISSING (success copy promises it)
+Appointments                    | MISSING
+Check-in                        | MISSING
+--------------------------------------------------------------------------------
+
+CLINIC STAFF FEATURES:
+--------------------------------------------------------------------------------
+Feature                         | Status
+--------------------------------|-----------------------------------------------
+Dashboard stats + chart         | Partial — decorative SVG, fake numbers
+Recent arrived list             | Partial — one contact
+Current token panel             | Partial — shows #12 Hardik
+Skip / Mark Complete            | MISSING logic — buttons inert
+Can book new token toggle       | Partial — local useState only
+Tabs Current/Skipped/Completed  | Partial — tab changes, same list always
+Search tokens                   | MISSING — input only
+Add walk-in token (+)           | MISSING — button only
+Notifications feed              | Partial — static rows
+Patients list / call            | Partial — buttons inert
+Staff authentication            | MISSING
+Multi-doctor queues             | MISSING
+--------------------------------------------------------------------------------
+
+AUTH — 2 COMPETING DESIGNS (FIX KARVU):
+
+A) LoginDialog (booking flow — BETTER, RAKHO):
+   Phone -> 4-digit OTP (1234) -> Name -> Random queue token #10-99
+   -> localStorage.user = { mobile, name, token }
+
+B) /login page (ORPHANED — CONFUSING):
+   Name + mobile -> 6-digit OTP (any accepted)
+   -> 32-char "device token" -> navigate home
+   -> localStorage NATHI lakhatu — booking still logged out
+
+END-TO-END JOURNEYS:
+--------------------------------------------------------------------------------
+Journey                              | Works?
+-------------------------------------|------------------------------------------
+Browse patient home with demo queue  | Yes (static)
+Book token as new user (OTP 1234)    | Yes (local only)
+Book token as returning user         | Yes (skips name if localStorage has name)
+See updated queue after booking      | NO
+Staff sees new booking               | NO
+Staff advances queue                 | NO
+Patient notified when turn near      | NO
+Cancel token                         | NO
+Staff login                          | NO
+Pay for visit                        | NO
+Switch clinic / multi-tenant         | NO
+--------------------------------------------------------------------------------
+
+
+================================================================================
+11. BECHVU KEVI RITE (GUJARAT-FIRST GO-TO-MARKET)
+================================================================================
+
+PHASE 0 — DESIGN PARTNERS (WEEK 1-2):
+3 clinic FREE (1 year / lifetime) — daily feedback mate:
+- 1 skin
+- 1 dental
+- 1 GP
+
+Demo nahi — REAL OPD HOURS ma use.
+
+PHASE 1 — MANUAL SALES (CLINIC 4-20):
+- City ma clinic visit (Rajkot / Ahmedabad / Surat — jem che)
+- 10 minute demo TENI phone par
+- Same day QR setup
+- Ek evening OPD ma staff ne help
+
+PEHLA FACEBOOK ADS MAT.
+Aa product BOOTS-ON-GROUND che.
+
+PHASE 2 — WORD OF MOUTH:
+- Doctor WhatsApp groups
+- Medical association meetings
+- "Clinic next door uses Queba" = best ad
+
+SALES LINE (SIMPLE):
+> "Patient phone thi token book kare, bahar wait kare,
+>  turn najik message aave. Tame fakt Complete dabavo.
+>  Rs.799/month. Ek din ma live."
+
+EMR, prescription, billing mage to:
+"Haji nathi — queue par focus."
+
+
+================================================================================
+12. 90 DIN NO PLAN
+================================================================================
+
+DAYS 1-7: DECISIONS
+- Final name: Queba ke Flexza
+  (RECOMMEND: Queba — UI ma already, meaning clear)
+- One city, one vertical (skin/dental)
+- Pricing: Rs.799/mo or Rs.7,999/yr
+- Backend stack: Node (Nest/Express) + Postgres + Redis
+  OR Supabase for speed
+
+DAYS 8-30: BACKEND MVP
+- Auth OTP
+- Clinic + doctor CRUD
+- Token book / skip / complete / pause
+- Live updates
+- Basic WhatsApp or SMS on book + "3 away"
+
+DAYS 31-45: WIRE EXISTING UI
+- Existing screens ne API sathe jodo
+- Navi pages MAT banavo
+
+DAYS 46-60: PILOT WITH 3 CLINICS
+Fix only what breaks in real OPD:
+- Double booking
+- Network drop
+- Staff confusion
+- Patient "where is my token?"
+
+DAYS 61-90: CHARGE MONEY
+- Convert pilots to paid
+- Onboard 7 more clinics
+- Target: 10 PAYING CLINICS = proof of business
+
+Jo 10 clinic pay na kare 90 din ma (working MVP pachi),
+to problem features nathi — sales/positioning che.
+
+
+================================================================================
+13. SUCCESS METRICS (FAKT AA)
+================================================================================
+
+--------------------------------------------------------------------------------
+Metric                              | Healthy early target
+------------------------------------|-------------------------------------------
+Clinics live                        | 10 in 90 days
+Tokens booked / clinic / day        | >= 20
+% patients who book remotely        | >= 40%
+Staff using Skip/Complete daily     | Yes
+Monthly churn                       | < 10%
+Support tickets                     | Low (product simple)
+--------------------------------------------------------------------------------
+
+VANITY METRICS TO IGNORE:
+Downloads, page views, "AI features", fancy charts.
+
+
+================================================================================
+14. AA MISTAKES THI PRODUCT MARAI JASE
+================================================================================
+
+1. Full HMS banavu (billing, inventory, prescription) — scope death
+2. App install force karvu — PWA + QR rakho
+3. Notification nathi — patient screen juve pan bahar jai ne bhuli jai
+4. Hospital pehla sell — wrong buyer
+5. Forever free — SMS burn, signal zero
+6. UI over-polish — UI enough che, BACKEND GAP che
+7. Flexza vs Queba — aa week ma EK NAME fix karo
+
+
+================================================================================
+15. FINAL DECISION (EK PATH)
+================================================================================
+
+--------------------------------------------------------------------------------
+Item            | Decision
+----------------|---------------------------------------------------------------
+Product         | Queba — small clinic live queue
+First market    | Tamaru city, solo skin/dental/GP
+MVP             | OTP + sequential tokens + Skip/Complete + pause
+                | + near-turn message + QR + Gujarati
+Price           | Rs.799 / month
+Next 30 days    | Backend + UI wire + 3 pilot clinics
+MAT KARO        | Payments, multi-branch, EMR, marketing site — pilots pehla
+--------------------------------------------------------------------------------
+
+
+================================================================================
+16. EK SENTENCE MA STATUS
+================================================================================
+
+Tame pause karyu "Svedna mate sundar demo" par.
+
+Business tyare start thase jyare:
+EK REAL CLINIC, EK FULL OPD DAY, REAL PATIENTS, REAL TOKENS par chale.
+
+
+================================================================================
+17. NEXT STEPS (JYARE CODING RESUME KARO)
+================================================================================
+
+Option A — Week-by-week build checklist:
+  - Koni file rakhavi
+  - Su delete karvu
+  - Koni screen ne kai API joiye
+
+Option B — Minimal backend schema + API list:
+  - Coding start karva mate ready contract
+
+PEHLA AA WEEK MA FIX KARO:
+1. Product name: Queba (recommended)
+2. City + first vertical
+3. Price: Rs.799/mo
+4. 3 design partner clinics identify karo
+5. Backend start (OTP + token + skip/complete)
+
+
+================================================================================
+END OF GUIDE
+File: QUEBA_COMPLETE_GUIDE_GUJLISH.txt
+Location: flexza/customer/
+================================================================================
